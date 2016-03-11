@@ -9,7 +9,7 @@ This extension forks from [https://github.com/RobSpectre/Trump-Filter](https://g
 
 Demo
 --------------------------
-![alt demo-image](https://github.com/fzhantw/goddess-aslin/images/demo.png)
+![alt demo-image](https://raw.githubusercontent.com/fzhantw/goddess-aslin/master/images/demo.png)
 
 
 Todos
