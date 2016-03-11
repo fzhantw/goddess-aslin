@@ -4,55 +4,52 @@
  * This is the primary JS file that manages the detection and filtration of Donald Trump from the web page.
  */
 
+$.fn.scrollStopped = function(callback) {
+  var that = this, $this = $(that);
+  $this.scroll(function(ev) {
+	clearTimeout($this.data('scrollTimeout'));
+	$this.data('scrollTimeout', setTimeout(callback.bind(that), 250, ev));
+  });
+};
+
+
 // Variables
-var regex = /Trump/i;
-var search = regex.exec(document.body.innerText);
+function doFilter() {
+  var regexEn = /Yu-Heng Lin/i;
+  var regexZh = /林妤恒/i;
+  var content = document.body.innerText
+  var search = regexEn.exec(content) || regexZh.exec(content);
 
+  // Implementation
+  if (search) {
+	chrome.storage.sync.get({
+	  filter: 'aggro',
+	}, function(items) {
+	  elements = $(":contains('Yu-Heng Lin')").filter("h1,h2,h3,h4,h5,p,span,li");
 
-// Functions
-function filterMild() {
-	console.log("Filtering Trump with Mild filter...");
-	return $(":contains('Trump'), :contains('TRUMP'), :contains('trump')").filter("h1,h2,h3,h4,h5,p,span,li");
+	  elements.each(function(index, element){
+		var originalContent = element.innerHTML
+		var newContent = originalContent.replace(regexEn, 'Goddess')
+		element.innerHTML = newContent
+	  })
+
+	  elements = $(":contains('林妤恒')").filter("h1,h2,h3,h4,h5,p,span,li");
+
+	  elements.each(function(index, element){
+		var originalContent = element.innerHTML
+		var newContent = originalContent.replace(regexZh, '女神')
+		element.innerHTML = newContent
+	  })
+
+	  chrome.runtime.sendMessage({method: "saveStats", trumps: elements.length}, function(response) {
+	  });
+	});
+	chrome.runtime.sendMessage({}, function(response) {});
+  }
 }
+doFilter()
+$(window).scrollStopped(function(ev){
+  doFilter()
+});
 
-function filterDefault () {
-	console.log("Filtering Trump with Default filter...");
-	return $(":contains('Trump'), :contains('TRUMP'), :contains('trump')").filter(":only-child").closest('div');
-}
-
-function filterVindictive() {
-	console.log("Filtering Trump with Vindictive filter...");
-	return $(":contains('Trump'), :contains('TRUMP'), :contains('trump')").filter(":not('body'):not('html')");
-}
-
-function getElements(filter) {
-   if (filter == "mild") {
-	   return filterMild();
-   } else if (filter == "vindictive") {
-	   return filterVindictive();
-   } else {
-	   return filterDefault();
-   }
-}
-
-function filterElements(elements) {
-	console.log("Elements to filter: ", elements);
-	elements.fadeOut("fast");
-}
-
-
-// Implementation
-if (search) {
-   console.log("Donald Trump found on page! - Searching for elements...");
-   chrome.storage.sync.get({
-     filter: 'aggro',
-   }, function(items) {
-	   console.log("Filter setting stored is: " + items.filter);
-	   elements = getElements(items.filter);
-	   filterElements(elements);
-	   chrome.runtime.sendMessage({method: "saveStats", trumps: elements.length}, function(response) {
-			  console.log("Logging " + elements.length + " trumps."); 
-		 });
-	 });
-  chrome.runtime.sendMessage({}, function(response) {});
-}
+setInterval(doFilter, 20000)
