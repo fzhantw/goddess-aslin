@@ -25,7 +25,7 @@ function doFilter() {
 	chrome.storage.sync.get({
 	  filter: 'aggro',
 	}, function(items) {
-	  elements = $(":contains('Yu-Heng Lin')").filter("h1,h2,h3,h4,h5,p,span,li");
+	  elements = $(":contains('Yu-Heng Lin')").filter('a,p,h1,h2,h3');
 
 	  elements.each(function(index, element){
 		var originalContent = element.innerHTML
@@ -33,7 +33,7 @@ function doFilter() {
 		element.innerHTML = newContent
 	  })
 
-	  elements = $(":contains('林妤恒')").filter("h1,h2,h3,h4,h5,p,span,li");
+	  elements = $(":contains('林妤恒')").filter('a,p,h1,h2,h3');
 
 	  elements.each(function(index, element){
 		var originalContent = element.innerHTML
