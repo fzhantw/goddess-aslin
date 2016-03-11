@@ -9,6 +9,6 @@ This extension forks from [https://github.com/RobSpectre/Trump-Filter](https://g
 
 Todos
 --------------------------
-1. Need icons with size: 16px*16px 16px*16px 19px*19px 48px*48px 550px*550px
+1. Need icons with size: 16px\*16px 19px\*19px 48px\*48px 550px\*550px
 2. Demo images for readme
 3. Should I publish?
